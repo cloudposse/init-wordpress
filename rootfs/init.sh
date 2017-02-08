@@ -1,2 +1,6 @@
 #!/usr/bin/env bash
-ls -l
+
+cp -R  /source/code/* /destination/code
+
+
+
