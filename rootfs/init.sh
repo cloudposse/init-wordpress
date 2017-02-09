@@ -11,7 +11,7 @@ if [[ -n "$DB" ]]; then
   curl $DB > /tmp/db.gz
   echo "Database fetched"
   echo "Importing database..."
-  gzip -d < /tmp/db.gz | wp --allow-root db import -
+  gzip -d < /tmp/db.gz | wp --path=/destination/code --allow-root db import -
   echo "Done"
 fi
 
