@@ -17,6 +17,7 @@ fi
 
 cd /source/code/
 git clone --depth 1 $GIT_REPO
+cd /source/code/$SOURCE
 git checkout $GIT_BRANCH
 rm -rf /source/code/$SOURCE/.git
 
