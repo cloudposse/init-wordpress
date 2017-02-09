@@ -10,9 +10,9 @@ if [[ -n "$DB" ]]; then
   echo "Fetching database..."
   curl $DB > /tmp/db.gz
   echo "Database fetched"
+  echo "Importing database..."
+  gzip -d < /tmp/db.gz | wp --allow-root db import -
+  echo "Done"
 fi
-echo "Sleeping...."
-sleep 5h
-
 
 
