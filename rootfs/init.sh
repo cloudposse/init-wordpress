@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-SOURCE=${SOURCE:-"/source/code"}
-DESTINATION=${DESTINATION:-"/destination/code"}
+SOURCE=${SOURCE:-""}
+DESTINATION=${DESTINATION:-""}
 
-cp -R  $SOURCE/* $DESTINATION
+cp -R  /source/code/$SOURCE/* /destination/code/$DESTINATION
 
 
 
