@@ -1,32 +1,42 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 GIT_REPO=${GIT_REPO:-""}
 GIT_BRANCH=${GIT_BRANCH:-"master"}
 
 DESTINATION=${DESTINATION:-""}
-DB=${DB:-""}
+DB_URL=${DB:-""}
 
-mkdir -p /destination/code/$DESTINATION
-
-if [[ -z "$GIT_REPO" ]]; then
+if [ -z "$GIT_REPO" ]; then
   echo "GIT_REPO is not defined"
   exit 1
 fi
 
-echo "Start initialization..."
+echo "Cloning ${GIT_REPO}#${GIT_BRANCH}..."
+git clone --depth 1 -b ${GIT_BRANCH} ${GIT_REPO} ${DESTINATION}
+if [ $? -ne 0 ]; then
+  echo "Failed"
+  exit 1
+fi
 
-cd /destination/code/$DESTINATION
-git clone --depth 1 $GIT_REPO ./
-git checkout $GIT_BRANCH
-rm -rf /destination/code/$DESTINATION/.git
+cd $DESTINATION
+rm -rf .git
 
-echo "Source code copied"
-if [[ -n "$DB" ]]; then
-  echo "Fetching database..."
-  curl $DB > /tmp/db.gz
+if [ -n "$DB_URL" ]; then
+  echo "Fetching database from ${DB_URL}..."
+  curl --fail -s $DB > /tmp/db.gz
+  if [ $? -ne 0 ]; then
+    echo "Failed to download database"
+    exit 1
+  fi
   echo "Database fetched"
   echo "Importing database..."
   gzip -d < /tmp/db.gz | wp --path=/destination/code/$DESTINATION --allow-root db import -
+  if [ $? -ne 0 ]; then
+    echo "Failed to import database"
+    exit 1
+  fi
   echo "Done"
 fi
 

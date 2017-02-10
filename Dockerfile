@@ -1,10 +1,12 @@
-FROM soifou/wpcli-alpine
+FROM cloudposse/wp-cli:latest
 
 ADD rootfs /
 
-RUN set -ex \
-      && apk update \
-      && apk add \
-        git
+ENV GIT_REPO=
+ENV GIT_BRANCH=
+ENV DESTINATION=
+ENV DB_URL=
+
+RUN apk --update add git
 
 ENTRYPOINT ["/init.sh"]
