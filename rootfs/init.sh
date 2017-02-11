@@ -7,32 +7,33 @@ GIT_BRANCH=${GIT_BRANCH:-"master"}
 
 DESTINATION=${DESTINATION:-"/destination"}
 DB_URL=${DB:-""}
+DB_DUMP=${DB_DUMP:-/tmp/db.sql.gz}
 
-if [ -z "$GIT_REPO" ]; then
-  echo "GIT_REPO is not defined"
-  exit 1
-fi
-
-echo "Cloning ${GIT_REPO}#${GIT_BRANCH}..."
-git clone --depth 1 -b ${GIT_BRANCH} ${GIT_REPO} ${DESTINATION}
-if [ $? -ne 0 ]; then
-  echo "Failed"
-  exit 1
-fi
-
-cd $DESTINATION
-rm -rf .git
-
-if [ -n "$DB_URL" ]; then
-  echo "Fetching database from ${DB_URL}..."
-  curl --fail -s $DB > /tmp/db.gz
+if [ -n "$GIT_REPO" ]; then
+  echo "Cloning ${GIT_REPO}#${GIT_BRANCH}..."
+  git clone --depth 1 -b "${GIT_BRANCH}" "${GIT_REPO}" "${DESTINATION}"
   if [ $? -ne 0 ]; then
-    echo "Failed to download database"
+    echo "Failed"
     exit 1
   fi
-  echo "Database fetched"
-  echo "Importing database..."
-  gzip -d < /tmp/db.gz | wp --path=/destination/code/$DESTINATION --allow-root db import -
+
+  cd "${DESTINATION}"
+  rm -rf .git
+fi
+
+if [ -n "${DB_URL}" ]; then
+  echo "Fetching database backup from ${DB_URL}..."
+  curl --fail -s "${DB_URL}" > "${DB_DUMP}"
+  if [ $? -ne 0 ]; then
+    echo "Failed to download database to ${DB_DUMP}"
+    exit 1
+  fi
+  echo "Database backup saved to ${DB_DUMP}"
+fi
+
+if [ -f "${DB_DUMP}" ]; then
+  echo "Importing database from ${DB_DUMP}..."
+  gzip -d < "${DB_DUMP}" | wp --path=$DESTINATION --allow-root db import -
   if [ $? -ne 0 ]; then
     echo "Failed to import database"
     exit 1
@@ -40,4 +41,4 @@ if [ -n "$DB_URL" ]; then
   echo "Done"
 fi
 
-
+exit 0
