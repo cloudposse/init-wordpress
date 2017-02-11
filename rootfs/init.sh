@@ -11,7 +11,7 @@ DB_DUMP=${DB_DUMP:-/tmp/db.sql.gz}
 
 if [ -n "$GIT_REPO_URL" ]; then
   echo "Cloning ${GIT_REPO_URL}#${GIT_BRANCH}..." | sed -E 's://[^@]+@://xxxxxxxx@:g'
-  git clone --depth 1 -b "${GIT_BRANCH}" "${GIT_REPO_URL}" "${DESTINATION}"
+  git clone --verbose --depth 1 -b "${GIT_BRANCH}" "${GIT_REPO_URL}" "${DESTINATION}"
   if [ $? -ne 0 ]; then
     echo "Failed"
     exit 1
