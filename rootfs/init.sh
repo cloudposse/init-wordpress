@@ -5,7 +5,7 @@ set -o pipefail
 GIT_REPO=${GIT_REPO:-""}
 GIT_BRANCH=${GIT_BRANCH:-"master"}
 
-DESTINATION=${DESTINATION:-""}
+DESTINATION=${DESTINATION:-"/destination"}
 DB_URL=${DB:-""}
 
 if [ -z "$GIT_REPO" ]; then
