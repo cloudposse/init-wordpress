@@ -6,6 +6,7 @@ GIT_REPO_URL=${GIT_REPO_URL:-""}
 GIT_BRANCH=${GIT_BRANCH:-"master"}
 
 TGZ_URL=${TGZ_URL:-""}
+TGZ_STRIP=${TGZ_STRIP:-1}
 
 DESTINATION=${DESTINATION:-"/destination"}
 DB_URL=${DB:-""}
@@ -26,7 +27,7 @@ fi
 if [ -n "$TGZ_URL" ]; then
   echo "Downloading ${TGZ_URL}..." | sed -E 's://[^@]+@://xxxxxxxx@:g'
   cd "${DESTINATION}"
-  curl --location "${TGZ_URL}" | tar -zvx
+  curl --location "${TGZ_URL}" | tar --strip ${TGZ_STRIP} -zvx
   if [ $? -ne 0 ]; then
     echo "Failed"
     exit 1
