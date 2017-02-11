@@ -5,6 +5,8 @@ set -o pipefail
 GIT_REPO_URL=${GIT_REPO_URL:-""}
 GIT_BRANCH=${GIT_BRANCH:-"master"}
 
+TGZ_URL=${TGZ_URL:-""}
+
 DESTINATION=${DESTINATION:-"/destination"}
 DB_URL=${DB:-""}
 DB_DUMP=${DB_DUMP:-/tmp/db.sql.gz}
@@ -18,6 +20,17 @@ if [ -n "$GIT_REPO_URL" ]; then
   fi
 
   cd "${DESTINATION}"
+  rm -rf .git
+fi
+
+if [ -n "$TGZ_URL" ]; then
+  echo "Downloading ${TGZ_URL}..." | sed -E 's://[^@]+@://xxxxxxxx@:g'
+  cd "${DESTINATION}"
+  curl --location "${TGZ_URL}" | tar -zvxf
+  if [ $? -ne 0 ]; then
+    echo "Failed"
+    exit 1
+  fi
   rm -rf .git
 fi
 
