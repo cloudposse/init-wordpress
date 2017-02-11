@@ -26,7 +26,7 @@ fi
 if [ -n "$TGZ_URL" ]; then
   echo "Downloading ${TGZ_URL}..." | sed -E 's://[^@]+@://xxxxxxxx@:g'
   cd "${DESTINATION}"
-  curl --location "${TGZ_URL}" | tar -zvxf
+  curl --location "${TGZ_URL}" | tar -zvx
   if [ $? -ne 0 ]; then
     echo "Failed"
     exit 1
